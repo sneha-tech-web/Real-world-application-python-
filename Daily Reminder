@@ -1,0 +1,82 @@
+from flask import Flask, render_template_string
+
+app = Flask(__name__)
+
+HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Reminder</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .box {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            width: 300px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 10px;
+            border: none;
+            width: 80%;
+        }
+        button {
+            background: #00c6ff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0072ff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>⏰ Daily Reminder</h2>
+    <input type="time" id="time">
+    <input type="text" id="msg" placeholder="Enter reminder">
+    <button onclick="setReminder()">Set Reminder</button>
+    <p id="status"></p>
+</div>
+
+<script>
+function setReminder() {
+    const time = document.getElementById("time").value;
+    const msg = document.getElementById("msg").value;
+
+    document.getElementById("status").innerText = "Reminder set for " + time;
+
+    setInterval(() => {
+        let now = new Date();
+        let current = now.toTimeString().slice(0,5);
+
+        if (current === time) {
+            alert("🔔 " + msg);
+        }
+    }, 1000);
+}
+</script>
+
+</body>
+</html>
+"""
+
+@app.route("/")
+def home():
+    return render_template_string(HTML)
+
+if __name__ == "__main__":
+    app.run(debug=True)
