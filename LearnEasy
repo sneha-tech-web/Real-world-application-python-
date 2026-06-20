@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnEasy</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+        }
+        header {
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            background: white;
+            color: black;
+            padding: 20px;
+            margin: 15px;
+            display: inline-block;
+            border-radius: 10px;
+            width: 200px;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+
+<header>📘 LearnEasy</header>
+
+<div class="container">
+    <div class="card">
+        <h3>Python</h3>
+        <p>Learn basics to advanced</p>
+        <button>Start</button>
+    </div>
+
+    <div class="card">
+        <h3>Web Dev</h3>
+        <p>HTML, CSS, JS</p>
+        <button>Start</button>
+    </div>
+
+    <div class="card">
+        <h3>DSA</h3>
+        <p>Crack coding interviews</p>
+        <button>Start</button>
+    </div>
+</div>
+
+</body>
+</html>
