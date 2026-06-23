@@ -1,0 +1,73 @@
+import sqlite3
+import time
+import threading
+from tkinter import *
+from plyer import notification
+
+# ---------- Database ----------
+conn = sqlite3.connect("reminders.db")
+cur = conn.cursor()
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS reminders(
+    id INTEGER PRIMARY KEY,
+    message TEXT,
+    time TEXT
+)
+""")
+conn.commit()
+
+
+# ---------- Add Reminder ----------
+def add_reminder():
+    msg = message_entry.get()
+    t = time_entry.get()
+    
+    if msg == "" or t == "":
+        return
+    
+    cur.execute("INSERT INTO reminders(message, time) VALUES (?, ?)", (msg, t))
+    conn.commit()
+    
+    message_entry.delete(0, END)
+    time_entry.delete(0, END)
+
+
+# ---------- Check Reminders ----------
+def check_reminders():
+    while True:
+        current_time = time.strftime("%H:%M")
+        
+        cur.execute("SELECT message FROM reminders WHERE time=?", (current_time,))
+        rows = cur.fetchall()
+        
+        for row in rows:
+            notification.notify(
+                title="💊 Health Reminder",
+                message=row[0],
+                timeout=5
+            )
+        
+        time.sleep(60)
+
+
+# ---------- GUI ----------
+root = Tk()
+root.title("Daily Health Reminder")
+
+Label(root, text="Message").grid(row=0, column=0, padx=10, pady=10)
+Label(root, text="Time (HH:MM)").grid(row=1, column=0, padx=10, pady=10)
+
+message_entry = Entry(root, width=30)
+time_entry = Entry(root, width=30)
+
+message_entry.grid(row=0, column=1)
+time_entry.grid(row=1, column=1)
+
+Button(root, text="Add Reminder", command=add_reminder).grid(row=2, column=0, columnspan=2, pady=10)
+
+
+# ---------- Background Thread ----------
+threading.Thread(target=check_reminders, daemon=True).start()
+
+root.mainloop()
