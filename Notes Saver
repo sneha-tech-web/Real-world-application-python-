@@ -1,0 +1,43 @@
+# notes_app.py
+
+import os
+
+FILE = "notes.txt"
+
+def add_note():
+    note = input("Write your note: ")
+    with open(FILE, "a") as f:
+        f.write(note + "\n")
+    print("✅ Note saved!\n")
+
+def view_notes():
+    if not os.path.exists(FILE):
+        print("❌ No notes found\n")
+        return
+    
+    print("\n📒 Your Notes:")
+    with open(FILE, "r") as f:
+        print(f.read())
+
+def clear_notes():
+    open(FILE, "w").close()
+    print("🗑️ All notes cleared!\n")
+
+def main():
+    while True:
+        print("1.Add Note  2.View Notes  3.Clear Notes  4.Exit")
+        choice = input("Choose: ")
+        
+        if choice == "1":
+            add_note()
+        elif choice == "2":
+            view_notes()
+        elif choice == "3":
+            clear_notes()
+        elif choice == "4":
+            break
+        else:
+            print("❌ Invalid choice\n")
+
+if __name__ == "__main__":
+    main()
