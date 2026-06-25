@@ -1,0 +1,89 @@
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+contacts = {}
+
+html = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Book</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #74ebd5, #9face6);
+            margin: 0;
+        }
+        .container {
+            width: 350px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #f2f2f2;
+            margin: 5px;
+            padding: 8px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📋 Contact Book</h2>
+
+    <form method="POST">
+        <input type="text" name="name" placeholder="Enter Name" required>
+        <input type="text" name="phone" placeholder="Enter Phone" required>
+        <button type="submit">Add Contact</button>
+    </form>
+
+    <h3>Saved Contacts</h3>
+    <ul>
+        {% for name, phone in contacts.items() %}
+            <li><strong>{{ name }}</strong> : {{ phone }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>
+"""
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    if request.method == "POST":
+        name = request.form["name"]
+        phone = request.form["phone"]
+        contacts[name] = phone
+    return render_template_string(html, contacts=contacts)
+
+if __name__ == "__main__":
+    app.run(debug=True)
