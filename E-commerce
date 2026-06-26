@@ -1,0 +1,131 @@
+from flask import Flask, render_template_string, request, redirect, url_for, session
+
+app = Flask(__name__)
+app.secret_key = "secret123"
+
+# Sample Products
+products = [
+    {"id": 1, "name": "Laptop", "price": 50000},
+    {"id": 2, "name": "Phone", "price": 20000},
+    {"id": 3, "name": "Headphones", "price": 2000},
+    {"id": 4, "name": "Shoes", "price": 3000}
+]
+
+HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>E-Commerce</title>
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    margin: 0;
+}
+.header {
+    background: #333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+.product {
+    background: white;
+    padding: 15px;
+    margin: 10px;
+    display: inline-block;
+    width: 200px;
+    border-radius: 8px;
+    text-align: center;
+}
+button {
+    background: green;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+}
+.cart {
+    background: white;
+    padding: 15px;
+    margin-top: 20px;
+}
+.remove {
+    background: red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🛒 Simple E-Commerce Store</h2>
+</div>
+
+<div class="container">
+
+<h3>Products</h3>
+
+{% for p in products %}
+<div class="product">
+    <h4>{{p.name}}</h4>
+    <p>₹{{p.price}}</p>
+    <form action="/add/{{p.id}}" method="post">
+        <button>Add to Cart</button>
+    </form>
+</div>
+{% endfor %}
+
+<div class="cart">
+<h3>🧾 Cart</h3>
+
+{% if cart %}
+    {% for item in cart %}
+        <p>{{item.name}} - ₹{{item.price}}
+        <a href="/remove/{{item.id}}">
+            <button class="remove">Remove</button>
+        </a>
+        </p>
+    {% endfor %}
+
+    <h4>Total: ₹{{total}}</h4>
+{% else %}
+    <p>Cart is empty</p>
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+</html>
+"""
+
+@app.route('/')
+def home():
+    cart = session.get("cart", [])
+    total = sum(item["price"] for item in cart)
+    return render_template_string(HTML, products=products, cart=cart, total=total)
+
+@app.route('/add/<int:id>', methods=['POST'])
+def add_to_cart(id):
+    cart = session.get("cart", [])
+    for p in products:
+        if p["id"] == id:
+            cart.append(p)
+    session["cart"] = cart
+    return redirect(url_for('home'))
+
+@app.route('/remove/<int:id>')
+def remove_from_cart(id):
+    cart = session.get("cart", [])
+    cart = [item for item in cart if item["id"] != id]
+    session["cart"] = cart
+    return redirect(url_for('home'))
+
+if __name__ == "__main__":
+    app.run(debug=True)
