@@ -1,0 +1,26 @@
+import smtplib
+
+def send_email(sender, password, receiver, subject, message):
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender, password)
+
+        email_message = f"Subject: {subject}\n\n{message}"
+        server.sendmail(sender, receiver, email_message)
+
+        print("✅ Email sent successfully!")
+        server.quit()
+
+    except Exception as e:
+        print("❌ Error:", e)
+
+
+# Input
+sender = input("Enter your Gmail: ")
+password = input("Enter your App Password: ")
+receiver = input("Enter receiver email: ")
+subject = input("Enter subject: ")
+message = input("Enter message: ")
+
+send_email(sender, password, receiver, subject, message)
